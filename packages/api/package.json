@@ -16,6 +16,7 @@
     "@opencord/env": "workspace:*",
     "@trpc/client": "catalog:",
     "@trpc/server": "catalog:",
+    "@upstash/redis": "^1.36.2",
     "dotenv": "catalog:",
     "zod": "catalog:"
   },
