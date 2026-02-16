@@ -1,11 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"sync"
 
 	"github.com/gorilla/websocket"
+	"github.com/redis/go-redis/v9"
 )
 
 const (
@@ -20,7 +22,8 @@ var bufferPool = sync.Pool{
 }
 
 type Client struct {
-	conn *websocket.Conn
+	conn   *websocket.Conn
+	UserID string
 }
 
 var upgrader = websocket.Upgrader{
@@ -32,14 +35,38 @@ var upgrader = websocket.Upgrader{
 }
 
 func handleWebSocket(w http.ResponseWriter, r *http.Request) {
+	ticket := r.URL.Query().Get("ticket")
+	if ticket == "" {
+		http.Error(w, "ticket required", http.StatusUnauthorized)
+		return
+	}
+
+	key := fmt.Sprintf("ws_ticket:%s", ticket)
+	userID, err := rdb.Get(ctx, key).Result()
+	if err == redis.Nil {
+		http.Error(w, "invalid or expired ticket", http.StatusUnauthorized)
+		return
+	} else if err != nil {
+		log.Printf("redis error: %v", err)
+		http.Error(w, "internal error", http.StatusInternalServerError)
+		return
+	}
+
+	if err := rdb.Del(ctx, key).Err(); err != nil {
+		log.Printf("failed to delete ticket: %v", err)
+	}
+
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Printf("ws upgrade failed: %v", err)
 		return
 	}
 
-	client := &Client{conn: conn}
-	log.Printf("client connected: %s", conn.RemoteAddr())
+	client := &Client{
+		conn:   conn,
+		UserID: userID,
+	}
+	log.Printf("client connected: %s (user: %s)", conn.RemoteAddr(), userID)
 
 	go client.readLoop()
 }
