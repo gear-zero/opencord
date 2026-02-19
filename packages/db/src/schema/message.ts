@@ -1,10 +1,4 @@
-import {
-  type AnyPgColumn,
-  index,
-  pgTable,
-  text,
-  timestamp,
-} from "drizzle-orm/pg-core";
+import { type AnyPgColumn, index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
 import { user } from "./auth";
 import { channel } from "./channel";
@@ -26,10 +20,9 @@ export const message = pgTable(
     channelId: text("channel_id").references(() => channel.id, {
       onDelete: "cascade",
     }),
-    replyToId: text("reply_to_id").references(
-      (): AnyPgColumn => message.id,
-      { onDelete: "set null" },
-    ),
+    replyToId: text("reply_to_id").references((): AnyPgColumn => message.id, {
+      onDelete: "set null",
+    }),
     pinnedAt: timestamp("pinned_at"),
     pinnedById: text("pinned_by_id").references(() => user.id, {
       onDelete: "set null",
@@ -47,14 +40,8 @@ export const message = pgTable(
     index("message_conversationId_idx").on(table.conversationId),
     index("message_channelId_idx").on(table.channelId),
     index("message_createdAt_idx").on(table.createdAt),
-    index("message_conversationId_createdAt_idx").on(
-      table.conversationId,
-      table.createdAt,
-    ),
-    index("message_channelId_createdAt_idx").on(
-      table.channelId,
-      table.createdAt,
-    ),
+    index("message_conversationId_createdAt_idx").on(table.conversationId, table.createdAt),
+    index("message_channelId_createdAt_idx").on(table.channelId, table.createdAt),
     index("message_replyToId_idx").on(table.replyToId),
   ],
 );

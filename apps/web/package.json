@@ -32,6 +32,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dotenv": "catalog:",
+    "facehash": "^0.1.0",
     "framer-motion": "^12.34.2",
     "lucide-react": "^0.473.0",
     "next-themes": "^0.4.6",

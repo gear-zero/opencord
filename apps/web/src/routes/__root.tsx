@@ -1,12 +1,7 @@
 import type { QueryClient } from "@tanstack/react-query";
 
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import {
-  HeadContent,
-  Outlet,
-  createRootRouteWithContext,
-  useMatch,
-} from "@tanstack/react-router";
+import { HeadContent, Outlet, createRootRouteWithContext, useMatch } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 
 import type { trpc } from "@/utils/trpc";
@@ -55,6 +50,7 @@ function RootComponent() {
         disableTransitionOnChange
         storageKey="vite-ui-theme"
       >
+        <div className="fixed top-4 right-4 text-sm font-medium text-foreground z-50">Opencord</div>
         {isLoginPage ? (
           <Outlet />
         ) : (

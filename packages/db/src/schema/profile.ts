@@ -2,12 +2,7 @@ import { pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
 import { user } from "./auth";
 
-export const userStatusEnum = pgEnum("user_status", [
-  "online",
-  "idle",
-  "dnd",
-  "offline",
-]);
+export const userStatusEnum = pgEnum("user_status", ["online", "idle", "dnd", "offline"]);
 
 export const userProfile = pgTable("user_profile", {
   id: text("id")

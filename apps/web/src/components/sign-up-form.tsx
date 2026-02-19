@@ -12,14 +12,18 @@ import { Label } from "./ui/label";
 
 export default function SignUpForm({
   onSwitchToSignIn,
+  email,
+  onEmailChange,
 }: {
   onSwitchToSignIn: () => void;
+  email: string;
+  onEmailChange: (email: string) => void;
 }) {
   const navigate = useNavigate({ from: "/" });
   const { isPending } = authClient.useSession();
 
   const form = useForm({
-    defaultValues: { email: "", password: "", name: "" },
+    defaultValues: { email, password: "", name: "" },
     onSubmit: async ({ value }) => {
       await authClient.signUp.email(
         { email: value.email, password: value.password, name: value.name },
@@ -48,12 +52,8 @@ export default function SignUpForm({
   return (
     <div className="w-full max-w-sm space-y-6">
       <div className="space-y-1 text-center">
-        <h1 className="text-2xl font-semibold tracking-tight">
-          Create an account
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          Get started with opencord today
-        </p>
+        <h1 className="text-2xl font-semibold tracking-tight">Create an account</h1>
+        <p className="text-sm text-muted-foreground">Get started with opencord today</p>
       </div>
 
       <form
@@ -97,7 +97,10 @@ export default function SignUpForm({
                 placeholder="you@example.com"
                 value={field.state.value}
                 onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
+                onChange={(e) => {
+                  field.handleChange(e.target.value);
+                  onEmailChange(e.target.value);
+                }}
                 className="h-10"
               />
               {field.state.meta.errors.map((error) => (

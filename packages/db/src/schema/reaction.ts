@@ -19,11 +19,7 @@ export const messageReaction = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => [
-    unique("message_reaction_unique").on(
-      table.messageId,
-      table.userId,
-      table.emoji,
-    ),
+    unique("message_reaction_unique").on(table.messageId, table.userId, table.emoji),
     index("message_reaction_messageId_idx").on(table.messageId),
   ],
 );

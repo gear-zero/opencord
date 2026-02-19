@@ -1,18 +1,8 @@
-import {
-  index,
-  pgEnum,
-  pgTable,
-  text,
-  timestamp,
-  unique,
-} from "drizzle-orm/pg-core";
+import { index, pgEnum, pgTable, text, timestamp, unique } from "drizzle-orm/pg-core";
 
 import { user } from "./auth";
 
-export const conversationTypeEnum = pgEnum("conversation_type", [
-  "dm",
-  "group",
-]);
+export const conversationTypeEnum = pgEnum("conversation_type", ["dm", "group"]);
 
 export const conversation = pgTable(
   "conversation",
@@ -51,10 +41,7 @@ export const conversationMember = pgTable(
     joinedAt: timestamp("joined_at").defaultNow().notNull(),
   },
   (table) => [
-    unique("conversation_member_unique").on(
-      table.conversationId,
-      table.userId,
-    ),
+    unique("conversation_member_unique").on(table.conversationId, table.userId),
     index("conversation_member_conversationId_idx").on(table.conversationId),
     index("conversation_member_userId_idx").on(table.userId),
   ],

@@ -1,8 +1,10 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Facehash } from "facehash";
 
 import { authClient } from "@/lib/auth-client";
+import { ModeToggle } from "@/components/mode-toggle";
 import SignInForm from "@/components/sign-in-form";
 import SignUpForm from "@/components/sign-up-form";
 
@@ -18,12 +20,16 @@ export const Route = createFileRoute("/login")({
 
 function RouteComponent() {
   const [showSignIn, setShowSignIn] = useState(true);
+  const [email, setEmail] = useState("");
 
   return (
     <div className="min-h-svh w-full flex bg-white dark:bg-black overflow-hidden">
       <div className="w-full flex flex-col md:flex-row h-full">
         {/* Left: Form Side */}
         <div className="w-full md:w-1/2 bg-white dark:bg-zinc-900 flex items-center justify-center p-8 md:p-12 relative min-h-svh order-2 md:order-1">
+          <div className="absolute top-4 left-4 md:top-8 md:left-8 z-50">
+            <ModeToggle />
+          </div>
           <div className="w-full max-w-sm relative min-h-[420px]">
             <AnimatePresence mode="wait" initial={false}>
               {showSignIn ? (
@@ -33,9 +39,13 @@ function RouteComponent() {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20 }}
                   transition={{ duration: 0.3, ease: "easeInOut" }}
-                  className="absolute inset-0"
+                  className="absolute inset-0 flex items-center justify-center"
                 >
-                  <SignInForm onSwitchToSignUp={() => setShowSignIn(false)} />
+                  <SignInForm
+                    onSwitchToSignUp={() => setShowSignIn(false)}
+                    email={email}
+                    onEmailChange={setEmail}
+                  />
                 </motion.div>
               ) : (
                 <motion.div
@@ -44,9 +54,13 @@ function RouteComponent() {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20 }}
                   transition={{ duration: 0.3, ease: "easeInOut" }}
-                  className="absolute inset-0"
+                  className="absolute inset-0 flex items-center justify-center"
                 >
-                  <SignUpForm onSwitchToSignIn={() => setShowSignIn(true)} />
+                  <SignUpForm
+                    onSwitchToSignIn={() => setShowSignIn(true)}
+                    email={email}
+                    onEmailChange={setEmail}
+                  />
                 </motion.div>
               )}
             </AnimatePresence>
@@ -54,7 +68,21 @@ function RouteComponent() {
         </div>
 
         {/* Right: Visual Side */}
-        <div className="relative w-full md:w-1/2 bg-zinc-50 dark:bg-zinc-950 overflow-hidden flex items-center justify-center p-12 min-h-[300px] md:min-h-0 order-1 md:order-2">
+        <div className="relative w-full md:w-1/2 bg-zinc-50 dark:bg-zinc-950 overflow-hidden flex flex-col items-center justify-center p-12 min-h-[300px] md:min-h-0 order-1 md:order-2 gap-4">
+          {/* Facehash Avatar */}
+          <div className="z-20 p-4 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm rounded-3xl shadow-2xl">
+            <Facehash name={email || "guest"} size={160} />
+          </div>
+          {/* Email Preview */}
+          <p className="z-20 text-lg font-medium text-zinc-700 dark:text-zinc-300 text-center max-w-xs truncate">
+            {email || "Enter your email"}
+          </p>
+          {/* App Tagline */}
+          <div className="absolute bottom-4 right-4 md:bottom-8 md:right-8 z-30 text-right max-w-md">
+            <p className="text-sm md:text-base text-zinc-500 dark:text-zinc-400 leading-relaxed">
+              Real-time collaboration with crystal-clear voice, video, and chat.
+            </p>
+          </div>
           {/* Animated Gradient Blob */}
           <div className="absolute inset-0 w-full h-full">
             <div className="absolute inset-0 bg-white/30 dark:bg-black/20 z-10 backdrop-blur-[80px]" />
@@ -84,38 +112,6 @@ function RouteComponent() {
               }}
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-bl from-blue-400 via-cyan-400 to-teal-400 rounded-full blur-3xl opacity-50 mix-blend-multiply"
             />
-          </div>
-
-          <div className="relative z-20 text-center space-y-6 max-w-md px-4">
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-              className="mx-auto w-20 h-20 bg-white dark:bg-white/10 rounded-2xl shadow-xl flex items-center justify-center backdrop-blur-md border border-white/20"
-            >
-              <svg
-                className="w-10 h-10 text-indigo-600 dark:text-white"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" />
-              </svg>
-            </motion.div>
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-              className="space-y-4"
-            >
-              <h2 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-white">
-                It's time to Wonder
-              </h2>
-              <p className="text-zinc-500 dark:text-zinc-400 text-xl font-light leading-relaxed">
-                Welcome to opencord's private alpha.
-                <br />
-                Early access for our first explorers.
-              </p>
-            </motion.div>
           </div>
         </div>
       </div>
