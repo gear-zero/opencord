@@ -8,14 +8,14 @@ React 19 SPA with file-based routing (TanStack Router), TailwindCSS v4, and shad
 - State: TanStack Query for server state, managed through tRPC proxy (`src/utils/trpc.ts`).
 - API calls: use the `trpc` proxy from `@/utils/trpc`, never raw fetch for tRPC endpoints.
 - AI streaming: use `@ai-sdk/react` hooks, backend streams at `/ai`.
-- Styling: TailwindCSS v4 utility classes. CSS in `src/index.css`. Never use inline style objects.
+- Styling: TailwindCSS v4 utility classes. CSS in `src/globals.css`. Never use inline style objects.
 - Theme: dark mode default via `next-themes` ThemeProvider wrapping the app.
 - Toasts: `sonner` via `<Toaster richColors />` mounted in root.
 
 ## Adding shadcn Components
 
 ```bash
-pnpm dlx shadcn@latest add <component> --filter web
+pnpm dlx shadcn@latest add web <component >--filter
 ```
 
 Components land in `src/components/ui/`. Utils in `src/lib/utils.ts`.
